@@ -1,11 +1,12 @@
 package br.com.mgn.segurosbanco.service;
 
 import br.com.mgn.segurosbanco.controller.dto.SimulacaoRequestDTO;
+import br.com.mgn.segurosbanco.entity.Seguro;
 import br.com.mgn.segurosbanco.entity.TipoSeguro;
-import br.com.mgn.segurosbanco.service.dto.ContratacaoRequestDTO;
-import br.com.mgn.segurosbanco.service.dto.SeguroDTO;
-import br.com.mgn.segurosbanco.service.dto.SimulacaoSeguroDTO;
+import br.com.mgn.segurosbanco.repository.SeguroRepository;
+import br.com.mgn.segurosbanco.service.dto.*;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,50 +15,61 @@ import java.time.LocalDate;
 @Service
 public class SeguroService {
 
-    //private final ClienteService clienteService;
+    private final SeguroRepository seguroRepository;
+    private final ClienteService clienteService;
 
-   /* public SeguroService(ClienteService clienteService) {
+    public SeguroService(SeguroRepository seguroRepository, ClienteService clienteService) {
+        this.seguroRepository = seguroRepository;
         this.clienteService = clienteService;
-    }*/
+    }
 
-    public SimulacaoSeguroDTO simularSeguro(SimulacaoRequestDTO simulacaoRequest) {
-       //ClienteDTO cliente = clienteService.buscarClientePorCpf(simulacaoRequest.getCpfCliente());
+    public SimulacaoSeguroDTO simularSeguro(SimulacaoRequestDTO simulacaoRequest) throws Exception {
+       ClienteDTO cliente = clienteService.buscarClientePorCpf(simulacaoRequest.cpfCliente());
+        if (cliente == null) {
+            //TODO colcor msg Simulação nao pode ser efetuada pois o cliente não encontrado.
+            throw new Exception("Cliente nao encontrado");
+        }
+       SimulacaoSeguroDTO simulacao = new SimulacaoSeguroDTO(new BigDecimal("100.00"), new BigDecimal("200.00"), new BigDecimal("300.00"));
 
-        SimulacaoSeguroDTO simulacao = new SimulacaoSeguroDTO(new BigDecimal("100.00"), new BigDecimal("200.00"), new BigDecimal("300.00"));
-
-        return simulacao;
+       return simulacao;
     }
 
     @CircuitBreaker(name = "clienteService", fallbackMethod = "fallbackBuscarCliente")
-    public Object buscarCliente(String cpf) {
-        // chamada HTTP para API de Cadastro
+    public ClienteDTO buscarCliente(String cpf) {
+        //TODO chamada HTTP para API de Cadastro
+        ClienteDTO cliente = clienteService.buscarClientePorCpf(cpf);
+        return cliente;
     }
 
+    public SeguroDTO contratarSeguro(ContratacaoRequestDTO contratacaoRequest) throws Exception {
+        ClienteDTO cliente = clienteService.buscarClientePorCpf(contratacaoRequest.cpfCliente());
 
-    public SeguroDTO contratarSeguro(ContratacaoRequestDTO contratacaoRequest) {
-        //ClienteDTO cliente = clienteService.buscarClientePorCpf(contratacaoRequest.getCpfCliente());
+        if (cliente == null) {
+            //TODO colcor msg Contratação nao pode ser efetuada pois o cliente não encontrado.
+            throw new Exception("Cliente nao encontrado");
+        }
 
-        SeguroDTO seguro = new SeguroDTO("11122233312", TipoSeguro.OURO, obterValorSeguro(TipoSeguro.OURO), LocalDate.now() );
-       /* seguro.cpfCliente(cliente.getCpf());
-        seguro.tipoSeguro(contratacaoRequest.getTipoSeguro());
-        seguro.valorContratado(obterValorSeguro(contratacaoRequest.getTipoSeguro()));
-        seguro.dataContratacao(LocalDate.now());*/
-
-        // Salvar no banco ou enviar evento para processar contratação
+        SeguroDTO seguro = new SeguroDTO(cliente.cpf(), contratacaoRequest.tipoSeguro(), obterValorSeguro(contratacaoRequest.tipoSeguro()), LocalDate.now());
+        seguroRepository.save(mapToEntity(seguro));
         return seguro;
     }
 
     private BigDecimal obterValorSeguro(TipoSeguro tipoSeguro) {
-        switch (tipoSeguro) {
-            case BRONZE:
-                return new BigDecimal("100.00");
-            case PRATA:
-                return new BigDecimal("200.00");
-            case OURO:
-                return new BigDecimal("300.00");
-            default:
-                throw new IllegalArgumentException("Tipo de seguro inválido");
-        }
+        return switch (tipoSeguro) {
+            case BRONZE -> new BigDecimal("100.00");
+            case PRATA -> new BigDecimal("200.00");
+            case OURO -> new BigDecimal("300.00");
+            default -> throw new IllegalArgumentException("Tipo de seguro inválido");
+        };
+    }
+
+    private Seguro mapToEntity(@NotNull SeguroDTO seguroDTO) {
+        var seguro = new Seguro();
+        seguro.setCpfCliente(seguroDTO.cpfCliente());
+        seguro.setTipoSeguro(seguroDTO.tipoSeguro());
+        seguro.setDataContratacao(seguroDTO.dataContratacao());
+        seguro.setValorContratado(seguroDTO.valorContratado());
+        return seguro;
     }
 }
 
