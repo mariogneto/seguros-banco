@@ -1,9 +1,7 @@
 package br.com.mgn.segurosbanco.controller;
 
 import br.com.mgn.segurosbanco.controller.dto.SimulacaoRequestDTO;
-import br.com.mgn.segurosbanco.service.ClienteService;
 import br.com.mgn.segurosbanco.service.SeguroService;
-import br.com.mgn.segurosbanco.service.dto.ClienteDTO;
 import br.com.mgn.segurosbanco.service.dto.ContratacaoRequestDTO;
 import br.com.mgn.segurosbanco.service.dto.SeguroDTO;
 import br.com.mgn.segurosbanco.service.dto.SimulacaoSeguroDTO;
