@@ -7,6 +7,7 @@ import br.com.mgn.segurosbanco.domain.ClienteDTO;
 import br.com.mgn.segurosbanco.domain.ContratacaoRequestDTO;
 import br.com.mgn.segurosbanco.domain.SeguroDTO;
 import br.com.mgn.segurosbanco.domain.SimulacaoSeguroDTO;
+import br.com.mgn.segurosbanco.exception.ClienteNotFoundException;
 import br.com.mgn.segurosbanco.repository.SeguroRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.constraints.NotNull;
@@ -29,12 +30,9 @@ public class SeguroService {
     public SimulacaoSeguroDTO simularSeguro(SimulacaoRequestDTO simulacaoRequest) throws Exception {
        ClienteDTO cliente = clienteService.buscarClientePorCpf(simulacaoRequest.cpfCliente());
         if (cliente == null) {
-            //TODO colcor msg Simulação nao pode ser efetuada pois o cliente não encontrado.
-            throw new Exception("Cliente nao encontrado");
+            throw new ClienteNotFoundException("Simulação nao pode ser efetuada pois o cliente não encontrado.");
         }
-       SimulacaoSeguroDTO simulacao = new SimulacaoSeguroDTO(new BigDecimal("100.00"), new BigDecimal("200.00"), new BigDecimal("300.00"));
-
-       return simulacao;
+       return new SimulacaoSeguroDTO(new BigDecimal("100.00"), new BigDecimal("200.00"), new BigDecimal("300.00"));
     }
 
     @CircuitBreaker(name = "clienteService", fallbackMethod = "fallbackBuscarCliente")
@@ -46,12 +44,9 @@ public class SeguroService {
 
     public SeguroDTO contratarSeguro(ContratacaoRequestDTO contratacaoRequest) throws Exception {
         ClienteDTO cliente = clienteService.buscarClientePorCpf(contratacaoRequest.cpfCliente());
-
         if (cliente == null) {
-            //TODO colcor msg Contratação nao pode ser efetuada pois o cliente não encontrado.
-            throw new Exception("Cliente nao encontrado");
+            throw new ClienteNotFoundException("Contratação nao pode ser efetuada pois o cliente não encontrado.");
         }
-
         SeguroDTO seguro = new SeguroDTO(cliente.cpf(), contratacaoRequest.tipoSeguro(), obterValorSeguro(contratacaoRequest.tipoSeguro()), LocalDate.now());
         seguroRepository.save(mapToEntity(seguro));
         return seguro;
