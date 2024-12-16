@@ -1,0 +1,16 @@
+services:
+  POSTGRES:
+    image: bitnami/postgresql:latest
+    ports:
+      - "5433:5432"
+    expose:
+      - "5433"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=seguros_banco
+      - POSTGRES_ROOT_PASSWORD=root
+    volumes:
+      - cadastro_pg_data:/bitnami/postgresql
+volumes:
+  cadastro_pg_data:
