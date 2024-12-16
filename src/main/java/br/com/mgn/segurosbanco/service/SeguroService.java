@@ -1,10 +1,13 @@
 package br.com.mgn.segurosbanco.service;
 
-import br.com.mgn.segurosbanco.controller.dto.SimulacaoRequestDTO;
-import br.com.mgn.segurosbanco.entity.Seguro;
-import br.com.mgn.segurosbanco.entity.TipoSeguro;
+import br.com.mgn.segurosbanco.domain.SimulacaoRequestDTO;
+import br.com.mgn.segurosbanco.domain.Seguro;
+import br.com.mgn.segurosbanco.domain.TipoSeguro;
+import br.com.mgn.segurosbanco.domain.ClienteDTO;
+import br.com.mgn.segurosbanco.domain.ContratacaoRequestDTO;
+import br.com.mgn.segurosbanco.domain.SeguroDTO;
+import br.com.mgn.segurosbanco.domain.SimulacaoSeguroDTO;
 import br.com.mgn.segurosbanco.repository.SeguroRepository;
-import br.com.mgn.segurosbanco.service.dto.*;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;

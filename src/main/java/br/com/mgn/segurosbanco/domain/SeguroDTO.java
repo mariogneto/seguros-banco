@@ -1,6 +1,4 @@
-package br.com.mgn.segurosbanco.service.dto;
-
-import br.com.mgn.segurosbanco.entity.TipoSeguro;
+package br.com.mgn.segurosbanco.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

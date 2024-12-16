@@ -1,4 +1,4 @@
-package br.com.mgn.segurosbanco.entity;
+package br.com.mgn.segurosbanco.domain;
 
 public enum TipoSeguro {
     BRONZE, PRATA, OURO

@@ -1,3 +1,3 @@
-package br.com.mgn.segurosbanco.controller.dto;
+package br.com.mgn.segurosbanco.domain;
 
 public record SimulacaoRequestDTO(String cpfCliente) {}

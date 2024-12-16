@@ -1,4 +1,4 @@
-package br.com.mgn.segurosbanco.service.dto;
+package br.com.mgn.segurosbanco.domain;
 
 import java.time.LocalDate;
 

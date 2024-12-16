@@ -1,6 +1,6 @@
 package br.com.mgn.segurosbanco.service;
 
-import br.com.mgn.segurosbanco.service.dto.ClienteDTO;
+import br.com.mgn.segurosbanco.domain.ClienteDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

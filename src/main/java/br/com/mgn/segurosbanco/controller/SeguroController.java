@@ -1,10 +1,10 @@
 package br.com.mgn.segurosbanco.controller;
 
-import br.com.mgn.segurosbanco.controller.dto.SimulacaoRequestDTO;
+import br.com.mgn.segurosbanco.domain.SimulacaoRequestDTO;
 import br.com.mgn.segurosbanco.service.SeguroService;
-import br.com.mgn.segurosbanco.service.dto.ContratacaoRequestDTO;
-import br.com.mgn.segurosbanco.service.dto.SeguroDTO;
-import br.com.mgn.segurosbanco.service.dto.SimulacaoSeguroDTO;
+import br.com.mgn.segurosbanco.domain.ContratacaoRequestDTO;
+import br.com.mgn.segurosbanco.domain.SeguroDTO;
+import br.com.mgn.segurosbanco.domain.SimulacaoSeguroDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

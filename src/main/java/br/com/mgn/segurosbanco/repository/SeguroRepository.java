@@ -1,6 +1,6 @@
 package br.com.mgn.segurosbanco.repository;
 
-import br.com.mgn.segurosbanco.entity.Seguro;
+import br.com.mgn.segurosbanco.domain.Seguro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
