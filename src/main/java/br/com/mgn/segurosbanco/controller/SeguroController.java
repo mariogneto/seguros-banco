@@ -16,15 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class SeguroController {
 
     private final SeguroService seguroService;
-    private final ClienteService clienteService;
 
-    public SeguroController(SeguroService seguroService, ClienteService clienteService) {
+    public SeguroController(SeguroService seguroService) {
         this.seguroService = seguroService;
-        this.clienteService = clienteService;
     }
 
     @PostMapping("/simular/{cpf}")
-    public ResponseEntity<SimulacaoSeguroDTO> simularSeguro(@PathVariable String cpf) {
+    public ResponseEntity<SimulacaoSeguroDTO> simularSeguro(@PathVariable String cpf) throws Exception {
         // Recebendo apenas o CPF, futuramente podemos adicionar outros parâmetros para simular o seguro
         SimulacaoSeguroDTO simulacao = seguroService.simularSeguro(new SimulacaoRequestDTO(cpf));
         return ResponseEntity.ok(simulacao);
