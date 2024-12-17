@@ -48,7 +48,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: resilience4j.circuitbreaker, health
+        include: resilience4j-circuitbreaker, health
   health:
     circuitbreakers:
       enabled: true
