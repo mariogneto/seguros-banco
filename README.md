@@ -62,3 +62,8 @@ public class Seguro {
 public enum TipoSeguro {
     BRONZE, PRATA, OURO
 }
+
+
+API SWAGGER 
+
+http://localhost:8090/swagger-ui/index.html
