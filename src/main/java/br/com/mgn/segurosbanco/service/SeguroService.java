@@ -39,7 +39,7 @@ public class SeguroService {
         return seguro;
     }
 
-    @CircuitBreaker(name = "myService", fallbackMethod = "fallbackResponse")
+    @CircuitBreaker(name = "clienteService", fallbackMethod = "fallbackResponse")
     public ClienteDTO buscarCliente(String cpf) {
         return clienteService.buscarClientePorCpf(cpf);
     }

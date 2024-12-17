@@ -26,7 +26,7 @@ spring:
 resilience4j:
   circuitbreaker:
     instances:
-      myService:
+      clienteService:
         register-health-indicator: true
         sliding-window-type: COUNT_BASED
         sliding-window-size: 5
