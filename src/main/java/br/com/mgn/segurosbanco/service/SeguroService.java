@@ -27,29 +27,26 @@ public class SeguroService {
         this.clienteService = clienteService;
     }
 
-    public SimulacaoSeguroDTO simularSeguro(SimulacaoRequestDTO simulacaoRequest) throws Exception {
-       ClienteDTO cliente = clienteService.buscarClientePorCpf(simulacaoRequest.cpfCliente());
-        if (cliente == null) {
-            throw new ClienteNotFoundException("Simulação nao pode ser efetuada pois o cliente não encontrado.");
-        }
+    public SimulacaoSeguroDTO simularSeguro(SimulacaoRequestDTO simulacaoRequest) {
+       this.buscarCliente(simulacaoRequest.cpfCliente());
        return new SimulacaoSeguroDTO(new BigDecimal("100.00"), new BigDecimal("200.00"), new BigDecimal("300.00"));
     }
 
-    @CircuitBreaker(name = "clienteService", fallbackMethod = "fallbackBuscarCliente")
-    public ClienteDTO buscarCliente(String cpf) {
-        //TODO chamada HTTP para API de Cadastro
-        ClienteDTO cliente = clienteService.buscarClientePorCpf(cpf);
-        return cliente;
-    }
-
-    public SeguroDTO contratarSeguro(ContratacaoRequestDTO contratacaoRequest) throws Exception {
-        ClienteDTO cliente = clienteService.buscarClientePorCpf(contratacaoRequest.cpfCliente());
-        if (cliente == null) {
-            throw new ClienteNotFoundException("Contratação nao pode ser efetuada pois o cliente não encontrado.");
-        }
+    public SeguroDTO contratarSeguro(ContratacaoRequestDTO contratacaoRequest) {
+        ClienteDTO cliente = this.buscarCliente(contratacaoRequest.cpfCliente());
         SeguroDTO seguro = new SeguroDTO(cliente.cpf(), contratacaoRequest.tipoSeguro(), obterValorSeguro(contratacaoRequest.tipoSeguro()), LocalDate.now());
         seguroRepository.save(mapToEntity(seguro));
         return seguro;
+    }
+
+    @CircuitBreaker(name = "myService", fallbackMethod = "fallbackResponse")
+    public ClienteDTO buscarCliente(String cpf) {
+        return clienteService.buscarClientePorCpf(cpf);
+    }
+
+    //TODO não está dando fallback ao buscarCliente e dar erro
+    private ClienteDTO fallbackResponse(String cpf, Throwable ex) {
+        throw new ClienteNotFoundException(String.format("O Cliente %s não foi encontrado e não pode Executar a operação" , cpf), ex);
     }
 
     private BigDecimal obterValorSeguro(TipoSeguro tipoSeguro) {
